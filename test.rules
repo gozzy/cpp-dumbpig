@@ -1,0 +1,7 @@
+alert tcp aaaa
+alert ip 1.1.1.1 any -> $HOME_NET any  ( msg: "Communication with nasty host found"; sid: 2; rev:1;classtype:web-application-attack;)
+alert ip 1.1.1.1 any -> $HOME_NET 80  (msg: "Communication with nasty host found"; sid: 2; rev:1; classtype:web-application-attack;)
+alert tcp any any -> any any (msg:"Possible  exploit"; ack;content:"|90|";sid:123; rev:1;classtype:web-application-attack;)
+alert tcp any any -> 192.168.1.0/24  any (flags: A;    ack: 0; msg: "TCP ping detected";sid:123; rev:1;classtype:web-application-attack;)
+alert ip any any -> 192.168.1.0/24  any (flow:established;flags: A; sid:123; rev:1;classtype:web-application-attack;   ack: 0; msg: "TCP ping detected";)
+alert ip any any -> 192.168.1.0/24  any (pcre:"";flow:established;flags: A; sid:123; rev:1;classtype:web-application-attack;   ack: 0; msg: "TCP ping detected";)
