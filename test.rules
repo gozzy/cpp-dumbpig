@@ -5,3 +5,5 @@ alert tcp any any -> any any (msg:"Possible  exploit"; ack;content:"|90|";sid:12
 alert tcp any any -> 192.168.1.0/24  any (flags: A;    ack: 0; msg: "TCP ping detected";sid:123; rev:1;classtype:web-application-attack;)
 alert ip any any -> 192.168.1.0/24  any (flow:established;flags: A; sid:123; rev:1;classtype:web-application-attack;   ack: 0; msg: "TCP ping detected";)
 alert ip any any -> 192.168.1.0/24  any (pcre:"";flow:established;flags: A; sid:123; rev:1;classtype:web-application-attack;   ack: 0; msg: "TCP ping detected";)
+alert tcp any any -> any any (msg:"Possible  exploit"; content:"|00 00|";sid:123; rev:1;classtype:web-application-attack;)
+alert ip any any -> any any (msg:"IPREP High Value CnC"; iprep:src,CnC,>,100; sid:1; rev:1;)

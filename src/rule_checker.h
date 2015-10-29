@@ -68,6 +68,7 @@ static const type_rule_options rule_options[] = {
 	{ "ssl_version",      true,  true,  ssl_version_arg_checker },
 	{ "ssl_state",        true,  true,  ssl_state_arg_checker },
 	{ "tos",              true,  true,  tos_arg_checker },
+	{ "iprep",            true,  false, iprep_arg_checker },
 
 	// Argless options
 	{ "http_method",      false, true,  NULL },

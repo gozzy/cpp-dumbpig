@@ -29,3 +29,4 @@ bool urilen_arg_checker           (std::string opt, std::string arg, std::string
 bool icode_arg_checker            (std::string opt, std::string arg, std::string &message);
 bool itype_arg_checker            (std::string opt, std::string arg, std::string &message);
 bool flags_arg_checker            (std::string opt, std::string arg, std::string &message);
+bool iprep_arg_checker            (std::string opt, std::string arg, std::string &message);

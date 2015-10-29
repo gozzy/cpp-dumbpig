@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 		("help,h",
 			"produce help message")
 		("filename,f",
-			po::value<std::string>()->required(),
+			po::value<std::string>(),
 			"rules file name,\nuse dash (-) for stdin")
 		;
 

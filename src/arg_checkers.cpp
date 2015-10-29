@@ -1,4 +1,5 @@
 #include <boost/regex.hpp>
+#include <cstdio>
 #include "arg_checkers.h"
 
 bool str_arg_checker(std::string opt, std::string arg, std::string &message)
@@ -244,4 +245,9 @@ bool itype_arg_checker(std::string opt, std::string arg, std::string &message)
 bool flags_arg_checker(std::string opt, std::string arg, std::string &message)
 {
 	return check_regex(opt, arg, "^\\s*(?:([\\+\\*!]))?\\s*([SAPRFU120CE\\+\\*!]+)(?:\\s*,\\s*([SAPRFU12CE]+))?\\s*$", message);
+}
+
+bool iprep_arg_checker(std::string opt, std::string arg, std::string &message)
+{
+	return check_regex(opt, arg, "\\s*(any|src|dst|both)\\s*,\\s*([\\w\\d\\-_]+)\\s*,\\s*(<|>|=)\\s*,\\s*(\\d+)\\s*", message);
 }
