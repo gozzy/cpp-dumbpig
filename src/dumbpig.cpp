@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <iostream>
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string.hpp>
 #include "rule_checker.h"
 
 int main(int argc, char **argv)
@@ -62,6 +63,11 @@ int main(int argc, char **argv)
 	std::string rule_str;
 
 	while(std::getline(*p_input, rule_str)) {
+		boost::trim(rule_str);
+		if (rule_str[0] == '#') {
+			continue;
+		}
+
 		process_rule(rule_str, message);
 		std::cout << "Rule: " << rule_str << std::endl;
 		std::cout << message << "\n" << std::endl;

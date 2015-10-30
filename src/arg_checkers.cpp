@@ -36,7 +36,7 @@ bool pcre_arg_checker(std::string opt, std::string arg, std::string &message)
 	}
 
 	try {
-		boost::regex expr(arg);
+		boost::regex expr(arg, boost::regex::perl);
 	}
 	catch (const std::exception &e) {
 		message += "- Invalid regular expression: " + arg + " (" + e.what() + ")\n";
@@ -249,5 +249,5 @@ bool flags_arg_checker(std::string opt, std::string arg, std::string &message)
 
 bool iprep_arg_checker(std::string opt, std::string arg, std::string &message)
 {
-	return check_regex(opt, arg, "\\s*(any|src|dst|both)\\s*,\\s*([\\w\\d\\-_]+)\\s*,\\s*(<|>|=)\\s*,\\s*(\\d+)\\s*", message);
+	return check_regex(opt, arg, "\\s*(any|src|dst|both)\\s*,\\s*([\\w\\d\\-_]+)\\s*,\\s*(<|>|=)\\s*,\\s*(12[0-7]|1[01][0-9]|[1-9][0-9]|[1-9])\\s*", message);
 }

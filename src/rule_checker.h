@@ -44,7 +44,7 @@ static const type_rule_options rule_options[] = {
 	{ "offset",           true,  false, NULL },
 	{ "depth",            true,  false, uint_arg_checker },
 	{ "dsize",            true,  true,  dsize_arg_checker },
-	{ "byte_test",        true,  true,  byte_test_arg_checker },
+	{ "byte_test",        true,  false, byte_test_arg_checker },
 	{ "byte_jump",        true,  true,  byte_jump_arg_checker },
 	{ "isdataat",         true,  true,  isdataat_arg_checker },
 	{ "ipopts",           true,  true,  ipopts_arg_checker },
