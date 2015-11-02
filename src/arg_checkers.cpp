@@ -1,8 +1,10 @@
-#include <boost/regex.hpp>
+#include <regex>
 #include <cstdio>
 #include "arg_checkers.h"
 
-bool str_arg_checker(std::string opt, std::string arg, std::string &message)
+using namespace std;
+
+bool str_arg_checker(string opt, string arg, string &message)
 {
 	if ((arg[0] != '"') || (arg[arg.length() - 1] != '"')) {
 		message += "- Value of option '" + opt + "' must be enclosed in '\"'\n";
@@ -20,7 +22,7 @@ bool str_arg_checker(std::string opt, std::string arg, std::string &message)
 	return true;
 }
 
-bool pcre_arg_checker(std::string opt, std::string arg, std::string &message)
+bool pcre_arg_checker(string opt, string arg, string &message)
 {
 	if ((arg[0] != '"') || (arg[arg.length() - 1] != '"')) {
 		message += "- Regular expression must be enclosed in '\"'\n";
@@ -36,9 +38,9 @@ bool pcre_arg_checker(std::string opt, std::string arg, std::string &message)
 	}
 
 	try {
-		boost::regex expr(arg, boost::regex::perl);
+		regex expr(arg);
 	}
-	catch (const std::exception &e) {
+	catch (const exception &e) {
 		message += "- Invalid regular expression: " + arg + " (" + e.what() + ")\n";
 		return false;
 	}
@@ -46,9 +48,9 @@ bool pcre_arg_checker(std::string opt, std::string arg, std::string &message)
 	return true;
 }
 
-bool uint_arg_checker(std::string opt, std::string arg, std::string &message)
+bool uint_arg_checker(string opt, string arg, string &message)
 {
-	if (std::count_if(arg.begin(), arg.end(), std::not1(std::ptr_fun(::isdigit)))) {
+	if (count_if(arg.begin(), arg.end(), not1(ptr_fun(::isdigit)))) {
 		message += "- Invalid argument to '" + opt + "' option: " + arg + ". Must be a positive integer\n";
 		return false;
 	}
@@ -56,9 +58,9 @@ bool uint_arg_checker(std::string opt, std::string arg, std::string &message)
 	return true;
 }
 
-static bool check_regex(std::string opt, std::string arg, std::string expr, std::string &message)
+static bool check_regex(string opt, string arg, string expr, string &message)
 {
-	if (!boost::regex_match(arg, boost::regex(expr))) {
+	if (!regex_match(arg, regex(expr))) {
 		message += "- Invalid argument to '" + opt + "'\n";
 		return false;
 	}
@@ -66,37 +68,37 @@ static bool check_regex(std::string opt, std::string arg, std::string expr, std:
 	return true;
 }
 
-bool reference_arg_checker(std::string opt, std::string arg, std::string &message)
+bool reference_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*([A-Za-z0-9]+)\\s*,\"?\\s*\"?\\s*([a-zA-Z0-9\\-_\\.\\/\\?\\=]+)\"?\\s*\"?", message);
+	return check_regex(opt, arg, "^\\s*([\\w\\d]+)\\s*,\"?\\s*\"?\\s*([\\w\\d\\-_\\.\\/\\?\\=]+)\"?\\s*\"?", message);
 }
 
-bool fragoffset_arg_checker(std::string opt, std::string arg, std::string &message)
+bool fragoffset_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*(?:(<|>))?\\s*([0-9]+)", message);
+	return check_regex(opt, arg, "^\\s*(?:(<|>))?\\s*(\\d+)", message);
 }
 
-bool fragbits_arg_checker(std::string opt, std::string arg, std::string &message)
+bool fragbits_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "^\\s*(?:([\\+\\*!]))?\\s*([MDR]+)", message);
 }
 
-bool classtype_arg_checker(std::string opt, std::string arg, std::string &message)
+bool classtype_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*([a-zA-Z][_a-zA-Z0-9-]*)\\s*$", message);
+	return check_regex(opt, arg, "^\\s*([\\w[_\\w\\d\\-]*)\\s*$", message);
 }
 
-bool isdataat_arg_checker(std::string opt, std::string arg, std::string &message)
+bool isdataat_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "^\\s*!?([^\\s,]+)\\s*(,\\s*relative)?\\s*(,\\s*rawbytes\\s*)?\\s*$", message);
 }
 
-bool ttl_arg_checker(std::string opt, std::string arg, std::string &message)
+bool ttl_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*([0-9]*)?\\s*([-<>=]+)?\\s*([0-9]+)?\\s*$", message);
+	return check_regex(opt, arg, "^\\s*(\\d*)?\\s*([-<>=]+)?\\s*(\\d+)?\\s*$", message);
 }
 
-bool detection_filter_arg_checker(std::string opt, std::string arg, std::string &message)
+bool detection_filter_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
@@ -106,7 +108,7 @@ bool detection_filter_arg_checker(std::string opt, std::string arg, std::string 
 		message);
 }
 
-bool threshold_arg_checker(std::string opt, std::string arg, std::string &message)
+bool threshold_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
@@ -118,67 +120,67 @@ bool threshold_arg_checker(std::string opt, std::string arg, std::string &messag
 		message);
 }
 
-bool tag_arg_checker(std::string opt, std::string arg, std::string &message)
+bool tag_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "^\\s*(host|session)\\s*(,\\s*(\\d+)\\s*,\\s*(packets|bytes|seconds)\\s*(,\\s*(src|dst))?\\s*)?$", message);
 }
 
-bool flow_arg_checker(std::string opt, std::string arg, std::string &message)
+bool flow_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*([A-z_]+)\\s*(?:,\\s*([A-z_]+))?\\s*(?:,\\s*([A-z_]+))?\\s*$", message);
+	return check_regex(opt, arg, "^\\s*([\\w_]+)\\s*(?:,\\s*([\\w_]+))?\\s*(?:,\\s*([\\w_]+))?\\s*$", message);
 }
 
-bool dce_iface_arg_checker(std::string opt, std::string arg, std::string &message)
-{
-	return check_regex(
-		opt,
-		arg,
-		"^\\s*([0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}"
-		"-[0-9a-zA-Z]{12})(?:\\s*,(<|>|=|!)([0-9]{1,5}))?(?:\\s*,(any_frag))?\\s*$",
-		message);
-}
-
-bool dce_opnum_arg_checker(std::string opt, std::string arg, std::string &message)
-{
-	return check_regex(opt, arg, "^\\s*([0-9]{1,5}(\\s*-\\s*[0-9]{1,5}\\s*)?)(,\\s*[0-9]{1,5}(\\s*-\\s*[0-9]{1,5})?\\s*)*$", message);
-}
-
-bool ssl_version_arg_checker(std::string opt, std::string arg, std::string &message)
+bool dce_iface_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
 		arg,
-		"^\\s*(!?[A-z0-9.]+)\\s*,?\\s*(!?[A-z0-9.]+)?\\s*\\,?\\s*"
-		"(!?[A-z0-9.]+)?\\s*,?\\s*(!?[A-z0-9.]+)?\\s*,?\\s*(!?[A-z0-9.]+)?\\s*$",
+		"^\\s*([\\d\\w]{8}-[\\d\\w]{4}-[\\d\\w]{4}-[\\d\\w]{4}"
+		"-[\\d\\w]{12})(?:\\s*,(<|>|=|!)(\\d{1,5}))?(?:\\s*,(any_frag))?\\s*$",
 		message);
 }
 
-bool ssl_state_arg_checker(std::string opt, std::string arg, std::string &message)
+bool dce_opnum_arg_checker(string opt, string arg, string &message)
 {
-	return (check_regex(opt, arg, "^\\s*([_a-zA-Z0-9]+)(.*)$", message) || check_regex(opt, arg, "^(?:\\s*[|]\\s*([_a-zA-Z0-9]+))(.*)$", message));
+	return check_regex(opt, arg, "^\\s*(\\d{1,5}(\\s*-\\s*\\d{1,5}\\s*)?)(,\\s*\\d{1,5}(\\s*-\\s*\\d{1,5})?\\s*)*$", message);
 }
 
-bool tos_arg_checker(std::string opt, std::string arg, std::string &message)
+bool ssl_version_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*(!?\\s*[0-9]{1,3}|!?\\s*[xX][0-9a-fA-F]{1,2})\\s*$", message);
+	return check_regex(
+		opt,
+		arg,
+		"^\\s*(!?[\\w\\d.]+)\\s*,?\\s*(!?[\\w\\d.]+)?\\s*\\,?\\s*"
+		"(!?[\\w\\d.]+)?\\s*,?\\s*(!?[\\w\\d.]+)?\\s*,?\\s*(!?[\\w\\d.]+)?\\s*$",
+		message);
 }
 
-bool flowbits_arg_checker(std::string opt, std::string arg, std::string &message)
+bool ssl_state_arg_checker(string opt, string arg, string &message)
+{
+	return (check_regex(opt, arg, "^\\s*([_\\w\\d]+)(.*)$", message) || check_regex(opt, arg, "^(?:\\s*[|]\\s*([_\\w\\d]+))(.*)$", message));
+}
+
+bool tos_arg_checker(string opt, string arg, string &message)
+{
+	return check_regex(opt, arg, "^\\s*(!?\\s*\\d{1,3}|!?\\s*[xX][0-9a-fA-F]{1,2})\\s*$", message);
+}
+
+bool flowbits_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "([a-z]+)(?:,(.*))?", message);
 }
 
-bool dsize_arg_checker(std::string opt, std::string arg, std::string &message)
+bool dsize_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*(<|>)?\\s*([0-9]{1,5})\\s*(?:(<>)\\s*([0-9]{1,5}))?\\s*$", message);
+	return check_regex(opt, arg, "^\\s*(<|>)?\\s*(\\d{1,5})\\s*(?:(<>)\\s*(\\d{1,5}))?\\s*$", message);
 }
 
-bool ip_proto_arg_checker(std::string opt, std::string arg, std::string &message)
+bool ip_proto_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "^\\s*([!<>]?)\\s*([^\\s]+)\\s*$", message);
 }
 
-bool byte_jump_arg_checker(std::string opt, std::string arg, std::string &message)
+bool byte_jump_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
@@ -198,7 +200,7 @@ bool byte_jump_arg_checker(std::string opt, std::string arg, std::string &messag
 		message);
 }
 
-bool byte_test_arg_checker(std::string opt, std::string arg, std::string &message)
+bool byte_test_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
@@ -217,37 +219,37 @@ bool byte_test_arg_checker(std::string opt, std::string arg, std::string &messag
 		message);
 }
 
-bool ipopts_arg_checker(std::string opt, std::string arg, std::string &message)
+bool ipopts_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "\\S[A-z]", message);
+	return check_regex(opt, arg, "\\S\\w", message);
 }
 
-bool urilen_arg_checker(std::string opt, std::string arg, std::string &message)
+bool urilen_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(
 		opt,
 		arg,
-		"^(?:\\s*)(<|>)?(?:\\s*)([0-9]{1,5})(?:\\s*)(?:(<>)(?:\\s*)"
-		"([0-9]{1,5}))?\\s*(?:,\\s*(norm|raw))?\\s*$",
+		"^(?:\\s*)(<|>)?(?:\\s*)(\\d{1,5})(?:\\s*)(?:(<>)(?:\\s*)"
+		"(\\d{1,5}))?\\s*(?:,\\s*(norm|raw))?\\s*$",
 		message);
 }
 
-bool icode_arg_checker(std::string opt, std::string arg, std::string &message)
+bool icode_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*(<|>)?\\s*([0-9]+)\\s*(?:<>\\s*([0-9]+))?\\s*$", message);
+	return check_regex(opt, arg, "^\\s*(<|>)?\\s*(\\d+)\\s*(?:<>\\s*(\\d+))?\\s*$", message);
 }
 
-bool itype_arg_checker(std::string opt, std::string arg, std::string &message)
+bool itype_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "^\\s*(<|>)?\\s*([0-9]+)\\s*(?:<>\\s*([0-9]+))?\\s*$", message);
+	return check_regex(opt, arg, "^\\s*(<|>)?\\s*(\\d+)\\s*(?:<>\\s*(\\d+))?\\s*$", message);
 }
 
-bool flags_arg_checker(std::string opt, std::string arg, std::string &message)
+bool flags_arg_checker(string opt, string arg, string &message)
 {
 	return check_regex(opt, arg, "^\\s*(?:([\\+\\*!]))?\\s*([SAPRFU120CE\\+\\*!]+)(?:\\s*,\\s*([SAPRFU12CE]+))?\\s*$", message);
 }
 
-bool iprep_arg_checker(std::string opt, std::string arg, std::string &message)
+bool iprep_arg_checker(string opt, string arg, string &message)
 {
-	return check_regex(opt, arg, "\\s*(any|src|dst|both)\\s*,\\s*([\\w\\d\\-_]+)\\s*,\\s*(<|>|=)\\s*,\\s*(12[0-7]|1[01][0-9]|[1-9][0-9]|[1-9])\\s*", message);
+	return check_regex(opt, arg, "\\s*(any|src|dst|both)\\s*,\\s*([\\w\\d\\-_]+)\\s*,\\s*(<|>|=)\\s*,\\s*(12[0-7]|1[01]\\d|[1-9]\\d|[1-9])\\s*", message);
 }
