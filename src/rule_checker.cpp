@@ -7,7 +7,7 @@
 #include "rule_checker.h"
 #include <boost/tokenizer.hpp>
 
-static std::vector<std::string> my_split(std::string str, std::string separators, size_t max_tokens, std::string cat_sym = " ")
+static std::vector<std::string> my_split(std::string str, std::string separators, size_t max_tokens, char cat_sym = ' ')
 {
 	std::vector<std::string> toks;
 	boost::split(toks, str, boost::is_any_of(separators), boost::token_compress_on);
@@ -101,7 +101,7 @@ static int parse_and_analyze_rule_options(const std::string proto, const std::st
 	bool found = false;
 
 	for (std::vector<std::string>::iterator it = options.begin(); it != options.end(); ++it) {
-		std::vector<std::string> opts = my_split(*it, ":", 2, ":");
+		std::vector<std::string> opts = my_split(*it, ":", 2, ':');
 		boost::trim(opts[0]);
 
 		if (opts[0].empty()) {
