@@ -102,39 +102,39 @@ static int parse_and_analyze_rule_options(const string proto, const string src_p
 
 	bool found = false;
 
-	for (vector<string>::iterator it = options.begin(); it != options.end(); ++it) {
-		vector<string> opts = my_split(*it, ":", 2, ':');
-		boost::trim(opts[0]);
+	for (const string &opt : options) {
+		vector<string> subopts = my_split(opt, ":", 2, ':');
+		boost::trim(subopts[0]);
 
-		if (opts[0].empty()) {
+		if (subopts[0].empty()) {
 			continue;
 		}
 
-		if (opts.size() > 1) {
-			boost::trim(opts[1]);
+		if (subopts.size() > 1) {
+			boost::trim(subopts[1]);
 		}
 
-		for (size_t j = 0; rule_options[j].name != NULL; j++) {
-			if (boost::iequals(rule_options[j].name, opts[0])) {
-				if ((find(configured.begin(), configured.end(), opts[0]) != configured.end()) &&
+		for (size_t j = 0; rule_options[j].name != nullptr; j++) {
+			if (boost::iequals(rule_options[j].name, subopts[0])) {
+				if ((find(configured.begin(), configured.end(), subopts[0]) != configured.end()) &&
 					rule_options[j].only_once) {
-					message += "- Option '" + opts[0] + "' may be specified only once\n";
+					message += "- Option '" + subopts[0] + "' may be specified only once\n";
 				}
 
-				if (rule_options[j].args_required && (opts.size() < 2)) {
-					message += "- Option '" + opts[0] + "' requires an argument\n";
+				if (rule_options[j].args_required && (subopts.size() < 2)) {
+					message += "- Option '" + subopts[0] + "' requires an argument\n";
 				} else if (rule_options[j].arg_checker) {
-					rule_options[j].arg_checker(opts[0], opts[1], message);
+					rule_options[j].arg_checker(subopts[0], subopts[1], message);
 				}
 
-				configured.push_back(opts[0]);
+				configured.push_back(subopts[0]);
 				found = true;
 				break;
 			}
 		}
 
 		if (!found) {
-			message += "- Unknown option: " + opts[0] + "\n";
+			message += "- Unknown option: " + subopts[0] + "\n";
 		}
 
 		found = false;

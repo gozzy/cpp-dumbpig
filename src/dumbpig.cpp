@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 
 	while(std::getline(*p_input, rule_str)) {
 		boost::trim(rule_str);
-		if (rule_str[0] == '#') {
+		if (rule_str[0] == '#' || rule_str.empty()) {
 			continue;
 		}
 
